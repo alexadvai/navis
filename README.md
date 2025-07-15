@@ -11,6 +11,11 @@ This application is built with Next.js and leverages Google's Gemini AI through 
 - **Laytime Calculator:** Quickly calculate demurrage or despatch based on the allowed laytime, time used, and contractual rates.
 - **Document Vault:** A secure and organized repository for all voyage-related documents, with AI-powered tagging for easy retrieval.
 - **Collaboration Hub:** A real-time activity feed for each voyage, allowing teams to post comments, track updates, and receive AI-generated suggestions.
+- **AI-Powered Route Optimization:** Suggests the most efficient shipping routes based on weather, traffic, and historical data.
+- **Bunker Price Predictor:** Uses AI to forecast bunker fuel prices, helping with cost management.
+- **Automated Voyage Reporting:** Generates daily or weekly voyage summary reports.
+- **Charter Party Clause Analysis:** An AI tool to review and flag potential issues in charter party agreements.
+- **Vessel Performance Monitoring:** Tracks and analyzes vessel speed, fuel consumption, and other performance metrics.
 
 ## Tech Stack
 
