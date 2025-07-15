@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import {LayoutDashboard, Bot, Calculator, Archive, Users, Settings, LogOut, Sailboat} from 'lucide-react';
+import {LayoutDashboard, Bot, Calculator, Archive, Users, Settings, LogOut, Sailboat, Route, Fuel, FileText, Anchor, Activity} from 'lucide-react';
 import {usePathname} from 'next/navigation';
 import Link from 'next/link';
 
@@ -29,6 +29,11 @@ export function AppSidebar() {
     {href: '/laytime-calculator', label: 'Laytime Calculator', icon: Calculator},
     {href: '/document-vault', label: 'Document Vault', icon: Archive},
     {href: '/collaboration', label: 'Collaboration', icon: Users},
+    {href: '/route-optimization', label: 'Route Optimization', icon: Route},
+    {href: '/bunker-predictor', label: 'Bunker Predictor', icon: Fuel},
+    {href: '/voyage-reporting', label: 'Voyage Reporting', icon: FileText},
+    {href: '/charter-analysis', label: 'Charter Analysis', icon: Anchor},
+    {href: '/vessel-monitoring', label: 'Vessel Monitoring', icon: Activity},
   ];
 
   return (

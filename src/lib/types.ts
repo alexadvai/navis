@@ -28,3 +28,29 @@ export interface Comment {
   timestamp: string;
   text: string;
 }
+
+export interface RouteSuggestion {
+  id: string;
+  name: string;
+  distance: string;
+  duration: string;
+  weatherOutlook: 'Good' | 'Fair' | 'Poor';
+  piracyRisk: 'Low' | 'Medium' | 'High';
+  isRecommended: boolean;
+}
+
+export interface BunkerPrice {
+  port: string;
+  price: number;
+  date: string;
+  trend: 'up' | 'down' | 'stable';
+}
+
+export interface VesselMetric {
+  id: string;
+  vessel: string;
+  speed: number;
+  fuelConsumption: number;
+  rpm: number;
+  timestamp: string;
+}
