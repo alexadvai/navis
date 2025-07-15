@@ -20,6 +20,30 @@ const formSchema = z.object({
   }),
 });
 
+const sampleEmail = `Subject: MV Stellar V001 - Notice of Readiness
+
+Good day,
+
+Please be advised that the MV Stellar Voyage 001 has arrived at the port of Rotterdam as of 0800 LT on August 15, 2024.
+
+The vessel is in all respects ready to commence cargo operations.
+
+Notice of Readiness is hereby tendered.
+
+---
+Statement of Facts:
+- Arrived Pilot Station: 15 Aug 2024, 0600 LT
+- Anchored: 15 Aug 2024, 0700 LT
+- NOR Tendered: 15 Aug 2024, 0800 LT
+- Vessel Berthed: 15 Aug 2024, 1400 LT
+---
+
+Instructions:
+Please arrange for immediate inspection and confirm acceptance of NOR.
+
+Best regards,
+Master, MV Stellar`;
+
 export default function EmailParserPage() {
   const [result, setResult] = useState<ExtractVoyageDetailsFromEmailOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +78,10 @@ export default function EmailParserPage() {
     }
   }
 
+  const handleLoadSample = () => {
+    form.setValue('emailBody', sampleEmail);
+  };
+
   return (
     <div className="flex flex-col h-full">
       <AppHeader title="AI Email Parser" />
@@ -73,7 +101,12 @@ export default function EmailParserPage() {
                       name="emailBody"
                       render={({field}) => (
                         <FormItem>
-                          <FormLabel>Email Body</FormLabel>
+                          <div className="flex justify-between items-center">
+                            <FormLabel>Email Body</FormLabel>
+                            <Button type="button" variant="link" size="sm" onClick={handleLoadSample}>
+                              Load Sample
+                            </Button>
+                          </div>
                           <FormControl>
                             <Textarea placeholder="Paste the full body of the voyage email here..." className="min-h-[300px] font-mono text-xs" {...field} />
                           </FormControl>
@@ -93,6 +126,7 @@ export default function EmailParserPage() {
             <Card className="h-full">
               <CardHeader>
                 <CardTitle>Extracted Details</CardTitle>
+                <CardDescription>The AI analyzes the email and structures the key information.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {isLoading && (

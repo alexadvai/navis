@@ -11,9 +11,9 @@ import type {Comment} from '@/lib/types';
 import {Send} from 'lucide-react';
 
 const initialComments: Comment[] = [
-  {id: 'C001', author: {name: 'Alice Johnson', avatarUrl: 'https://placehold.co/40x40.png'}, timestamp: '2 hours ago', text: 'Just received the updated NOR for V002. ETA has been pushed back by 6 hours.'},
-  {id: 'C002', author: {name: 'Bob Williams', avatarUrl: 'https://placehold.co/40x40.png'}, timestamp: '1 hour ago', text: '@Alice Thanks for the update. I will inform the port agent.'},
-  {id: 'C003', author: {name: 'NavisAI Bot', avatarUrl: 'https://placehold.co/40x40.png'}, timestamp: '30 mins ago', text: 'Suggested Action: Notify charterer about ETA change for V002.'},
+  {id: 'C001', author: {name: 'Alice Johnson', avatarUrl: 'https://placehold.co/40x40.png', avatarHint: 'woman portrait'}, timestamp: '2 hours ago', text: 'Just received the updated NOR for V002. ETA has been pushed back by 6 hours.'},
+  {id: 'C002', author: {name: 'Bob Williams', avatarUrl: 'https://placehold.co/40x40.png', avatarHint: 'man portrait'}, timestamp: '1 hour ago', text: '@Alice Thanks for the update. I will inform the port agent.'},
+  {id: 'C003', author: {name: 'NavisAI Bot', avatarUrl: 'https://placehold.co/40x40.png', avatarHint: 'robot head'}, timestamp: '30 mins ago', text: 'Suggested Action: Notify charterer about ETA change for V002.'},
 ];
 
 export default function CollaborationPage() {
@@ -25,7 +25,7 @@ export default function CollaborationPage() {
     if (newComment.trim() === '') return;
     const comment: Comment = {
       id: `C${(comments.length + 1).toString().padStart(3, '0')}`,
-      author: {name: 'Alex Robu', avatarUrl: 'https://placehold.co/40x40.png'},
+      author: {name: 'Alex Robu', avatarUrl: 'https://placehold.co/40x40.png', avatarHint: 'man portrait'},
       timestamp: 'Just now',
       text: newComment,
     };
@@ -47,7 +47,7 @@ export default function CollaborationPage() {
               <div className="space-y-6">
                 {comments.map(comment => (
                   <div key={comment.id} className="flex gap-4">
-                    <Avatar data-ai-hint="person portrait">
+                    <Avatar data-ai-hint={comment.author.avatarHint}>
                       <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />
                       <AvatarFallback>{comment.author.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>

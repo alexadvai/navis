@@ -9,67 +9,78 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Separator} from '@/components/ui/separator';
-import {Upload} from 'lucide-react';
+import {Upload, Loader2, FileText, Proportions, Banknote} from 'lucide-react';
+import {Textarea} from '@/components/ui/textarea';
+import type {LaytimeCalculationResult} from '@/lib/types';
+import {calculateLaytimeAction} from './actions';
+import {useToast} from '@/hooks/use-toast';
 
 const formSchema = z.object({
-  allowedLaytime: z.coerce.number().positive('Must be a positive number'),
+  allowedLaytime: z.coerce.number().positive('Must be a positive number of hours'),
   demurrageRate: z.coerce.number().positive('Must be a positive number'),
   despatchRate: z.coerce.number().positive('Must be a positive number'),
-  timeSheet: z.any().optional(),
+  timeSheet: z.string().min(50, 'Please provide a detailed Statement of Facts / Time Sheet'),
 });
 
-type CalculationResult = {
-  laytimeUsed: string;
-  laytimeSavedOrExceeded: string;
-  result: 'Demurrage' | 'Despatch';
-  amount: string;
-};
+const sampleTimesheet = `Statement of Facts - MV Neptune V002
+Port: Tokyo
+---
+- NOR Tendered: 20 Aug 2024, 0900 LT (Notice time counts from 1300 LT)
+- Cargo Operations Commenced: 20 Aug 2024, 1500 LT
+- Rain Stoppage: 21 Aug 2024, 0200 LT to 0600 LT (4 hours)
+- Cargo Operations Completed: 22 Aug 2024, 1800 LT
+`;
 
 export default function LaytimeCalculatorPage() {
-  const [result, setResult] = useState<CalculationResult | null>(null);
+  const [result, setResult] = useState<LaytimeCalculationResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const {toast} = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       allowedLaytime: 72,
       demurrageRate: 20000,
       despatchRate: 10000,
+      timeSheet: '',
     },
   });
 
-  // Mock calculation based on a fictional timesheet
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const laytimeUsedHours = 85.5; // This would be calculated from the uploaded timesheet
-    const laytimeUsedDays = laytimeUsedHours / 24;
-    const allowedLaytimeDays = values.allowedLaytime / 24;
-
-    if (laytimeUsedDays > allowedLaytimeDays) {
-      const timeOverDays = laytimeUsedDays - allowedLaytimeDays;
-      setResult({
-        laytimeUsed: `${laytimeUsedHours.toFixed(2)} hours`,
-        laytimeSavedOrExceeded: `${(timeOverDays * 24).toFixed(2)} hours exceeded`,
-        result: 'Demurrage',
-        amount: `$${(timeOverDays * values.demurrageRate).toLocaleString('en-US', {minimumFractionDigits: 2})}`,
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    setResult(null);
+    try {
+      const calculation = await calculateLaytimeAction(values);
+      setResult(calculation);
+      toast({
+        title: 'Calculation Complete',
+        description: `The result is ${calculation.resultType}.`,
       });
-    } else {
-      const timeSavedDays = allowedLaytimeDays - laytimeUsedDays;
-      setResult({
-        laytimeUsed: `${laytimeUsedHours.toFixed(2)} hours`,
-        laytimeSavedOrExceeded: `${(timeSavedDays * 24).toFixed(2)} hours saved`,
-        result: 'Despatch',
-        amount: `$${(timeSavedDays * values.despatchRate).toLocaleString('en-US', {minimumFractionDigits: 2})}`,
+    } catch (e) {
+      toast({
+        variant: 'destructive',
+        title: 'Calculation Failed',
+        description: 'The AI could not process the laytime calculation. Please check your input.',
       });
+      console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
+  const handleLoadSample = () => {
+    form.setValue('timeSheet', sampleTimesheet);
+  };
+
   return (
     <div className="flex flex-col h-full">
-      <AppHeader title="Laytime Calculator" />
+      <AppHeader title="AI Laytime Calculator" />
       <div className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Calculation Inputs</CardTitle>
-              <CardDescription>Enter contract terms and upload the time sheet.</CardDescription>
+              <CardDescription>Enter contract terms and paste the time sheet.</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -77,19 +88,17 @@ export default function LaytimeCalculatorPage() {
                   <FormField
                     control={form.control}
                     name="timeSheet"
-                    render={() => (
+                    render={({field}) => (
                       <FormItem>
-                        <FormLabel>Time Sheet Document</FormLabel>
-                        <FormControl>
-                          <Button asChild variant="outline" className="w-full">
-                            <label htmlFor="file-upload" className="cursor-pointer flex items-center justify-center gap-2">
-                              <Upload className="h-4 w-4" />
-                              <span>Upload File (optional for demo)</span>
-                              <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                            </label>
+                        <div className="flex justify-between items-center">
+                          <FormLabel>Statement of Facts / Time Sheet</FormLabel>
+                          <Button type="button" variant="link" size="sm" onClick={handleLoadSample}>
+                            Load Sample
                           </Button>
+                        </div>
+                        <FormControl>
+                          <Textarea placeholder="Paste the full Statement of Facts or time log here..." className="min-h-[200px] font-mono text-xs" {...field} />
                         </FormControl>
-                        <FormDescription>Upload the Statement of Facts or Time Sheet.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -134,8 +143,8 @@ export default function LaytimeCalculatorPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">
-                    Calculate
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Calculate with AI'}
                   </Button>
                 </form>
               </Form>
@@ -145,23 +154,34 @@ export default function LaytimeCalculatorPage() {
           <Card>
             <CardHeader>
               <CardTitle>Calculation Result</CardTitle>
+              <CardDescription>The AI's analysis of the laytime calculation.</CardDescription>
             </CardHeader>
             <CardContent>
-              {!result ? (
+              {isLoading && (
+                <div className="flex justify-center items-center h-full min-h-[300px]">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              )}
+              {!isLoading && !result && (
                 <div className="text-center text-muted-foreground h-full min-h-[300px] flex items-center justify-center">
                   <p>Results will be displayed here.</p>
                 </div>
-              ) : (
+              )}
+              {result && (
                 <div className="space-y-6">
-                  <div className={`p-6 rounded-lg ${result.result === 'Demurrage' ? 'bg-destructive/10' : 'bg-accent/10'}`}>
-                    <p className={`text-sm font-medium ${result.result === 'Demurrage' ? 'text-destructive' : 'text-accent-foreground'}`}>{result.result} Due</p>
-                    <p className={`text-4xl font-bold ${result.result === 'Demurrage' ? 'text-destructive' : 'text-accent-foreground'}`}>{result.amount}</p>
+                  <div className={`p-6 rounded-lg ${result.resultType === 'Demurrage' ? 'bg-destructive/10' : 'bg-green-500/10'}`}>
+                    <p className={`text-sm font-medium ${result.resultType === 'Demurrage' ? 'text-destructive' : 'text-green-700'}`}>{result.resultType} Due</p>
+                    <p className={`text-4xl font-bold ${result.resultType === 'Demurrage' ? 'text-destructive' : 'text-green-700'}`}>${result.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+                  </div>
+                  <Separator />
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="text-foreground">{result.calculationNarrative}</p>
                   </div>
                   <Separator />
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="space-y-1">
                       <p className="text-muted-foreground">Laytime Used</p>
-                      <p className="font-semibold text-foreground">{result.laytimeUsed}</p>
+                      <p className="font-semibold text-foreground">{result.laytimeUsedHours.toFixed(2)} hours</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-muted-foreground">Allowed Laytime</p>
@@ -169,7 +189,7 @@ export default function LaytimeCalculatorPage() {
                     </div>
                     <div className="space-y-1 col-span-2">
                       <p className="text-muted-foreground">Time Saved / Exceeded</p>
-                      <p className="font-semibold text-foreground">{result.laytimeSavedOrExceeded}</p>
+                      <p className="font-semibold text-foreground">{result.timeSavedOrExceededHours.toFixed(2)} hours {result.resultType === 'Despatch' ? 'saved' : 'exceeded'}</p>
                     </div>
                   </div>
                 </div>

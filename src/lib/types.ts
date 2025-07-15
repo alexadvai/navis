@@ -24,13 +24,14 @@ export interface Comment {
   author: {
     name: string;
     avatarUrl: string;
+    avatarHint?: string;
   };
   timestamp: string;
   text: string;
 }
 
 export interface RouteSuggestion {
-  id: string;
+  id:string;
   name: string;
   distance: string;
   duration: string;
@@ -54,3 +55,11 @@ export interface VesselMetric {
   rpm: number;
   timestamp: string;
 }
+
+export type LaytimeCalculationResult = {
+  resultType: 'Demurrage' | 'Despatch';
+  amount: number;
+  laytimeUsedHours: number;
+  timeSavedOrExceededHours: number;
+  calculationNarrative: string;
+};

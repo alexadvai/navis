@@ -3,7 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
 import {Badge} from '@/components/ui/badge';
-import {Upload} from 'lucide-react';
+import {Upload, Eye} from 'lucide-react';
 import type {Document} from '@/lib/types';
 
 const documents: Document[] = [
@@ -39,6 +39,7 @@ export default function DocumentVaultPage() {
                   <TableHead>Upload Date</TableHead>
                   <TableHead className="hidden sm:table-cell">Size</TableHead>
                   <TableHead>AI-Generated Tags</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -56,6 +57,12 @@ export default function DocumentVaultPage() {
                           </Badge>
                         ))}
                       </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon">
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
