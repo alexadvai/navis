@@ -61,7 +61,7 @@ export default function VoyageReportingPage() {
     setIsLoading(true);
     setReport(null);
     try {
-      const result = await generateReportAction({voyage, reportType});
+      const result = await generateReportAction({voyage, reportType: reportType as 'daily' | 'weekly' | 'final'});
       setReport(result.report);
       toast({
         title: 'Report Generated',

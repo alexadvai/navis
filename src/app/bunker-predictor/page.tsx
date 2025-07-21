@@ -27,7 +27,7 @@ const forecastData = [
 export default function BunkerPredictorPage() {
   const TrendIcon = ({trend}: {trend: BunkerPrice['trend']}) => {
     if (trend === 'up') return <ArrowUpRight className="h-4 w-4 text-destructive" />;
-    if (trend === 'down') return <ArrowUpRight className="h-4 w-4 text-green-500" />;
+    if (trend === 'down') return <ArrowDownRight className="h-4 w-4 text-green-500" />;
     return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
