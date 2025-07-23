@@ -90,7 +90,7 @@ function VoyageCard({voyage}: {voyage: Voyage}) {
           </div>
           <ArrowRight className="mx-2 text-muted-foreground shrink-0 h-5 w-5" />
           <div className="flex items-center gap-2">
-            <Anchor className="h-4 w-4 text-accent" />
+            <Anchor className="h-4 w-4 text-primary" />
             <span className="font-medium text-foreground truncate">{voyage.destinationPort}</span>
           </div>
         </div>
