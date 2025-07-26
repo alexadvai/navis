@@ -12,7 +12,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {Loader2} from 'lucide-react';
 import {parseEmailAction} from './actions';
 import type {ExtractVoyageDetailsFromEmailOutput} from '@/ai/flows/extract-voyage-details-from-email';
-import {useToast} from '@/hooks/use-toast';
+import {useToast} from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   emailBody: z.string().min(50, {

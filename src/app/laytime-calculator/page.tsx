@@ -13,7 +13,7 @@ import {Upload, Loader2, FileText, Proportions, Banknote} from 'lucide-react';
 import {Textarea} from '@/components/ui/textarea';
 import type {LaytimeCalculationResult} from '@/lib/types';
 import {calculateLaytimeAction} from './actions';
-import {useToast} from '@/hooks/use-toast';
+import {useToast} from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   allowedLaytime: z.coerce.number().positive('Must be a positive number of hours'),

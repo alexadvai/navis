@@ -19,10 +19,10 @@ const ExtractVoyageDetailsFromEmailInputSchema = z.object({
 export type ExtractVoyageDetailsFromEmailInput = z.infer<typeof ExtractVoyageDetailsFromEmailInputSchema>;
 
 const ExtractVoyageDetailsFromEmailOutputSchema = z.object({
-  noticeOfReadiness: z.string().optional().describe('The Notice of Readiness (NOR) details extracted from the email.'),
-  statementOfFacts: z.string().optional().describe('The Statement of Facts (SOF) details extracted from the email.'),
-  instructions: z.string().optional().describe('Any special instructions contained in the email.'),
-  otherDetails: z.string().optional().describe('Any other voyage-related details.'),
+  noticeOfReadiness: z.string().optional().describe('The Notice of Readiness (NOR) details extracted from the email. Should be a concise summary of the NOR.'),
+  statementOfFacts: z.string().optional().describe('The Statement of Facts (SOF) details extracted from the email. Should be a concise summary of the SOF.'),
+  instructions: z.string().optional().describe('Any special instructions contained in the email. Should be a concise summary of the instructions.'),
+  otherDetails: z.string().optional().describe('Any other voyage-related details. Should be a concise summary of any other relevant information.'),
 });
 
 export type ExtractVoyageDetailsFromEmailOutput = z.infer<typeof ExtractVoyageDetailsFromEmailOutputSchema>;
@@ -35,20 +35,21 @@ const extractVoyageDetailsFromEmailPrompt = ai.definePrompt({
   name: 'extractVoyageDetailsFromEmailPrompt',
   input: {schema: ExtractVoyageDetailsFromEmailInputSchema},
   output: {schema: ExtractVoyageDetailsFromEmailOutputSchema},
-  prompt: `You are an AI assistant specializing in extracting key details from shipping-related emails.
+  prompt: `You are an AI assistant for a shipping operations manager. Your task is to extract key information from an email related to a vessel's voyage.
 
-  Your task is to analyze the provided email content and extract the following information:
+Analyze the provided email body and extract the following details. If a section is not present, leave it blank.
 
-  - Notice of Readiness (NOR) details: Extract all relevant information pertaining to the NOR, including dates, times, and locations.
-  - Statement of Facts (SOF) details: Extract all relevant information pertaining to the SOF, including dates, times, and locations.
-  - Instructions: Identify and extract any specific instructions provided in the email, such as operational instructions or requests.
-  - Other details: Extract any other important voyage-related details that don't fit into the above categories.
+- **Notice of Readiness (NOR):** Find when and where the NOR was tendered. Extract the exact date and time.
+- **Statement of Facts (SOF):** Summarize the timeline of events, including arrival, anchoring, and berthing times.
+- **Instructions:** Identify any direct operational commands or requests for the recipient.
+- **Other Details:** Note any other commercially or operationally relevant information, like vessel name or voyage number if available.
 
-  Email Content:
-  {{emailBody}}
+Email Content to Analyze:
+---
+{{{emailBody}}}
+---
 
-  Please provide the extracted information in a structured format.
-  `,
+Please provide the extracted information in the required structured format. Be concise and accurate.`,
 });
 
 const extractVoyageDetailsFromEmailFlow = ai.defineFlow(
