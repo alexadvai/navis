@@ -7,7 +7,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {Download, Loader2} from 'lucide-react';
 import type {Voyage} from '@/lib/types';
 import {generateReportAction} from './actions';
-import {useToast} from '@/hooks/use-toast';
+import {useToast} from '@/components/ui/use-toast';
 
 const voyages: Voyage[] = [
   {
