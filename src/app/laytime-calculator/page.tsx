@@ -173,25 +173,37 @@ export default function LaytimeCalculatorPage() {
                     <p className={`text-sm font-medium ${result.resultType === 'Demurrage' ? 'text-destructive' : 'text-green-700'}`}>{result.resultType} Due</p>
                     <p className={`text-4xl font-bold ${result.resultType === 'Demurrage' ? 'text-destructive' : 'text-green-700'}`}>${result.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
                   </div>
-                  <Separator />
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="text-foreground">{result.calculationNarrative}</p>
-                  </div>
-                  <Separator />
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground">Laytime Used</p>
-                      <p className="font-semibold text-foreground">{result.laytimeUsedHours.toFixed(2)} hours</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-muted-foreground">Allowed Laytime</p>
-                      <p className="font-semibold text-foreground">{form.getValues('allowedLaytime')} hours</p>
-                    </div>
-                    <div className="space-y-1 col-span-2">
-                      <p className="text-muted-foreground">Time Saved / Exceeded</p>
-                      <p className="font-semibold text-foreground">{result.timeSavedOrExceededHours.toFixed(2)} hours {result.resultType === 'Despatch' ? 'saved' : 'exceeded'}</p>
-                    </div>
-                  </div>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                       <CardTitle className="text-base">Calculation Narrative</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                       <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/80">
+                         <p>{result.calculationNarrative}</p>
+                       </div>
+                    </CardContent>
+                  </Card>
+                 
+                  <Card>
+                     <CardHeader className="pb-4">
+                       <CardTitle className="text-base">Summary</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground">Laytime Used</p>
+                        <p className="font-semibold text-foreground">{result.laytimeUsedHours.toFixed(2)} hours</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground">Allowed Laytime</p>
+                        <p className="font-semibold text-foreground">{form.getValues('allowedLaytime')} hours</p>
+                      </div>
+                      <div className="space-y-1 col-span-2">
+                        <p className="text-muted-foreground">Time Saved / Exceeded</p>
+                        <p className="font-semibold text-foreground">{result.timeSavedOrExceededHours.toFixed(2)} hours {result.resultType === 'Despatch' ? 'saved' : 'exceeded'}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               )}
             </CardContent>
