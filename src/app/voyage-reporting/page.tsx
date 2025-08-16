@@ -117,8 +117,6 @@ export default function VoyageReportingPage() {
                   </SelectContent>
                 </Select>
               </div>
-            </CardContent>
-            <CardContent>
               <Button onClick={handleGenerateReport} disabled={isLoading || !selectedVoyageId} className="w-full">
                 {isLoading ? <Loader2 className="animate-spin" /> : <Download />}
                 Generate Report

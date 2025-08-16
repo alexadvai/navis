@@ -74,8 +74,8 @@ export default function CharterAnalysisPage() {
                   <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
                     {analysis.split('\n\n').map((item, index) => (
                       <div key={index} className="mb-4 p-3 bg-secondary/50 rounded-lg">
-                        <p className="font-semibold text-foreground">{item.split(':')[0]}</p>
-                        <p className="text-foreground/80">{item.split(':')[1]}</p>
+                        <p className="font-semibold text-foreground">{item.split('**')[1]}</p>
+                        <p className="text-foreground/80">{item.split('**')[2].substring(1)}</p>
                       </div>
                     ))}
                   </div>
